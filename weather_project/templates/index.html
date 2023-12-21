@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+</head>
+<body>
+    <h1>Weather</h1>
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city">
+    <button onclick="getWeather()">Find</button>
+
+    <div id="weather-data">
+        <h2 id="city-name"></h2>
+        <p id="temperature"></p>
+        <p id="humidity"></p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+    <script>
+        const socket = io.connect('http://localhost:8080');
+
+        function getWeather() {
+            const city = document.getElementById('city').value;
+            socket.emit('set_city', { city: city });
+        }
+
+        socket.on('weather_data', function(data) {
+            if (data) {
+                document.getElementById('city-name').innerHTML = `${data.name} Weather:`;
+                document.getElementById('temperature').innerHTML = `Temperature: ${data.temp}°C`;
+                document.getElementById('humidity').innerHTML = `Humidity: ${data.humidity}%`;
+            }
+        });
+    </script>
+</body>
+</html>
